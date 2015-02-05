@@ -1,0 +1,10 @@
+var <%= name %> = React.createClass({
+    getInitialState: function () {
+        return {
+            items: ['One', 'Two', 'Three']
+        };
+    },
+    render: function () {
+        return <%= name %>RT.apply(this);
+    }
+});

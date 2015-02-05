@@ -16,5 +16,10 @@ npm-debug.log
 ### bower ###
 /bower_components/*
 
-/web
+### tests ###
+/test
 
+### gh-pages content ###
+/index.html
+/playground
+/web

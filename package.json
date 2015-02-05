@@ -1,0 +1,53 @@
+{
+  "name": "react-templates",
+  "version": "0.1.5",
+  "description": "Light weight templates for react -> write html get valid react code",
+  "main": "./src/cli.js",
+  "bin": {
+    "rt": "./bin/rt.js"
+  },
+  "scripts": {
+    "test": "node test/src/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/wix/react-templates.git"
+  },
+  "author": "Avi Marcus",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wix/react-templates/issues"
+  },
+  "homepage": "https://github.com/wix/react-templates",
+  "dependencies": {
+    "chalk": "^0.5.1",
+    "cheerio": "^0.18.0",
+    "escodegen": "^1.4.1",
+    "esprima": "^1.2.2",
+    "lodash": "^2.4.1",
+    "optionator": "^0.5.0",
+    "text-table": "^0.2.0"
+  },
+  "devDependencies": {
+    "brace": "^0.4.0",
+    "brfs": "^1.2.0",
+    "grunt": "^0.4.5",
+    "grunt-browserify": "^3.2.0",
+    "grunt-contrib-requirejs": "^0.4.4",
+    "grunt-contrib-uglify": "^0.7.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-eslint": "^3.0.0",
+    "grunt-node-tap": "^0.1.61",
+    "react": "^0.12.2",
+    "tape": "^3.0.2"
+  },
+  "keywords": [
+    "templates",
+    "react-templates",
+    "react",
+    "reactjs",
+    "react.js",
+    "react-component",
+    "react component"
+  ]
+}
