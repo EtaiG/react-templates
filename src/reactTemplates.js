@@ -351,6 +351,9 @@ function convertTemplateToReact(html, options) {
     var rootNode = cheerio.load(html, {lowerCaseTags: false, lowerCaseAttributeNames: false, xmlMode: true, withStartIndices: true});
     options = _.defaults({}, options, defaultOptions);
     var defines = {'react/addons': 'React', lodash: '_'};
+    if (options.plugins && options.plugins.rootProps) {
+        defines[options.plugins.rootProps] = 'rootPropsPlugin';
+    }
     var context = defaultContext(html, options);
     var rootTags = _.filter(rootNode.root()[0].children, function (i) { return i.type === 'tag'; });
     if (!rootTags || rootTags.length === 0) {

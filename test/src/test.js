@@ -129,15 +129,16 @@ test('util.isStale', function (t) {
 test('plugin tests', function(t){
     var files = ['plugin-rootprops.rt'] //, 'plugin-rootprops-with-children.rt'];
     t.plan(files.length);
-
     files.forEach(check);
 
     function check(testFile) {
         var filename = path.join(dataPath, testFile);
         var html = fs.readFileSync(filename).toString().replace(/\r/g, '').trim();
+        var pluginFileName = path.join(pluginPath, 'rootProps.json');
+        var pluginObj = JSON.parse(fs.readFileSync(pluginFileName).toString());
         var expected = fs.readFileSync(filename + '.js').toString().replace(/\r/g, '').trim();
         var actual = reactTemplates.convertTemplateToReact(html, {
-            plugins: path.resolve(pluginPath, 'rootProps.json')
+            plugins: pluginObj
         }).replace(/\r/g, '').trim();
         t.equal(actual, expected);
         if (actual !== expected) {
