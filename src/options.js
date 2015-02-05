@@ -87,5 +87,10 @@ module.exports = optionator({
         alias: 'k',
         type: 'Boolean',
         description: 'Show stack trace on errors.'
+    }, {
+        option: 'plugins-definitions',
+        alias: 'p',
+        type: 'String',
+        description: 'Path to definition file for plugins.'
     }]
 });

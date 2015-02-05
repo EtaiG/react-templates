@@ -3,7 +3,7 @@
  * Created by idok on 11/10/14.
  */
 'use strict';
-//var fs = require('fs');
+var fs = require('fs');
 var _ = require('lodash');
 var path = require('path');
 var api = require('./api');
@@ -17,6 +17,14 @@ function executeOptions(currentOptions) {
     var ret = 0;
     var files = currentOptions._;
     context.options.format = currentOptions.format || 'stylish';
+    var pluginSource = path.resolve(currentOptions['pluginsDefinitions']);//(path.join(__dirname,currentOptions['propsPlugin']));
+    if (pluginSource) {
+        var rootPropsPlugin = JSON.parse(fs.readFileSync(pluginSource).toString());
+        currentOptions.plugins = {
+            rootProps: rootPropsPlugin.rootProps
+        };
+        delete currentOptions['pluginsDefinitions'];
+    }
 
     if (currentOptions.version) {
         console.log('v' + pkg.version);

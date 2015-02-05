@@ -1,7 +1,7 @@
 define([
     'react/addons',
     'lodash',
-    'test/plugins/rootPropsPlugin'
+    'test/plugins/mockRootPropsPlugin'
 ], function (React, _, rootPropsPlugin) {
     'use strict';
     return function () {
