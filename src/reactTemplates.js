@@ -25,7 +25,7 @@ var templatePJSTemplate = _.template('var <%= name %> = function () {\n' +
                                 'return <%= body %>\n' +
                                 '};\n');
 var rootPropsPluginTemplate = _.template("<%= propsFuncName %>.call(this, <%= originalProps %>)");
-
+var rootPropsPlugin = 'rootPropsPlugin';
 var templateProp = 'rt-repeat';
 var ifProp = 'rt-if';
 var classSetProp = 'rt-class';
@@ -245,8 +245,7 @@ function defaultContext(html, options) {
         boundParams: [],
         injectedFunctions: [],
         html: html,
-        options: options,
-        level: -1
+        options: options
     };
 }
 
@@ -256,14 +255,13 @@ function hasNonSimpleChildren(node) {
     });
 }
 
-function convertHtmlToReact(node, context) {
+function convertHtmlToReact(node, context, isRoot) {
     if (node.type === 'tag') {
         context = {
             boundParams: _.clone(context.boundParams),
             injectedFunctions: context.injectedFunctions,
             html: context.html,
-            options: context.options,
-            level: context.level + 1
+            options: context.options
         };
 
         var data = {name: convertTagNameToConstructor(node.name, context)};
@@ -299,10 +297,10 @@ function convertHtmlToReact(node, context) {
         if (node.attribs[propsProp]) {
             data.props = propsTemplate({generatedProps: data.props, rtProps: node.attribs[propsProp]});
         }
-        if (context.level === 0 && context.options.plugins.rootProps) {
+        if (isRoot && context.options.plugins.rootProps) {
             data.props = rootPropsPluginTemplate({
                 originalProps: data.props,
-                propsFuncName: 'rootPropsPlugin'
+                propsFuncName: rootPropsPlugin
             });
         }
         if (node.attribs[ifProp]) {
@@ -361,7 +359,7 @@ function convertTemplateToReact(html, options) {
     options = _.defaults({}, options, defaultOptions);
     var defines = {'react/addons': 'React', lodash: '_'};
     if (options.plugins.rootProps) {
-        defines[options.plugins.rootProps] = 'rootPropsPlugin';
+        defines[options.plugins.rootProps] = rootPropsPlugin;
     }
     var context = defaultContext(html, options);
     var rootTags = _.filter(rootNode.root()[0].children, function (i) { return i.type === 'tag'; });
@@ -387,7 +385,7 @@ function convertTemplateToReact(html, options) {
     if (firstTag === null) {
       throw buildError('Document should have a single root element', context, rootNode.root()[0]);
     }
-    var body = convertHtmlToReact(firstTag, context);
+    var body = convertHtmlToReact(firstTag, context, true);
     var requirePaths = _(defines).keys().map(function (reqName) { return '"' + reqName + '"'; }).value().join(',');
     var requireVars = _(defines).values().value().join(',');
     var vars = _(defines).map(function (reqVar, reqPath) { return 'var ' + reqVar + " = require('" + reqPath + "');"; }).join('\n');
