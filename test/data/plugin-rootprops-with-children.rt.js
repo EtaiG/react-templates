@@ -5,7 +5,7 @@ define([
 ], function (React, _, rootPropsPlugin) {
     'use strict';
     return function () {
-        return React.createElement('div', rootPropsPlugin({
+        return React.createElement('div', rootPropsPlugin.call(this, {
             'id': 'outer',
             'style': {
                 backgroundColor: 'blue',

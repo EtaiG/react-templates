@@ -24,6 +24,7 @@ var templatePJSTemplate = _.template('var <%= name %> = function () {\n' +
                                 '<%= injectedFunctions %>\n' +
                                 'return <%= body %>\n' +
                                 '};\n');
+var rootPropsPluginTemplate = _.template("<%= propsFuncName %>.call(this, <%= originalProps %>)");
 
 var templateProp = 'rt-repeat';
 var ifProp = 'rt-if';
@@ -31,7 +32,7 @@ var classSetProp = 'rt-class';
 var scopeProp = 'rt-scope';
 var propsProp = 'rt-props';
 
-var defaultOptions = {modules: 'amd', version: false, force: false, format: 'stylish', targetVersion: '0.12.2'};
+var defaultOptions = {modules: 'amd', version: false, force: false, format: 'stylish', targetVersion: '0.12.2', plugins: {}};
 
 function shouldUseCreateElement(context) {
     switch (context.options.targetVersion) {
@@ -244,7 +245,8 @@ function defaultContext(html, options) {
         boundParams: [],
         injectedFunctions: [],
         html: html,
-        options: options
+        options: options,
+        level: -1
     };
 }
 
@@ -260,7 +262,8 @@ function convertHtmlToReact(node, context) {
             boundParams: _.clone(context.boundParams),
             injectedFunctions: context.injectedFunctions,
             html: context.html,
-            options: context.options
+            options: context.options,
+            level: context.level + 1
         };
 
         var data = {name: convertTagNameToConstructor(node.name, context)};
@@ -295,6 +298,12 @@ function convertHtmlToReact(node, context) {
         data.props = generateProps(node, context);
         if (node.attribs[propsProp]) {
             data.props = propsTemplate({generatedProps: data.props, rtProps: node.attribs[propsProp]});
+        }
+        if (context.level === 0 && context.options.plugins.rootProps) {
+            data.props = rootPropsPluginTemplate({
+                originalProps: data.props,
+                propsFuncName: 'rootPropsPlugin'
+            });
         }
         if (node.attribs[ifProp]) {
             data.condition = node.attribs[ifProp].trim();
@@ -351,7 +360,7 @@ function convertTemplateToReact(html, options) {
     var rootNode = cheerio.load(html, {lowerCaseTags: false, lowerCaseAttributeNames: false, xmlMode: true, withStartIndices: true});
     options = _.defaults({}, options, defaultOptions);
     var defines = {'react/addons': 'React', lodash: '_'};
-    if (options.plugins && options.plugins.rootProps) {
+    if (options.plugins.rootProps) {
         defines[options.plugins.rootProps] = 'rootPropsPlugin';
     }
     var context = defaultContext(html, options);
