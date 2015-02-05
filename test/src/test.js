@@ -8,6 +8,7 @@ var React = require('react/addons');
 var cheerio = require('cheerio');
 
 var dataPath = path.resolve(__dirname, '..', 'data');
+var pluginPath = path.resolve(__dirname, '..', 'plugins');
 
 test('invalid tests', function (t) {
     var files = [
@@ -123,4 +124,24 @@ test('util.isStale', function (t) {
 
     fs.unlinkSync(a);
     fs.unlinkSync(b);
+});
+
+test('plugin tests', function(t){
+    var files = ['plugin-rootprops.rt', 'plugin-rootprops-with-children.rt'];
+    t.plan(files.length);
+
+    files.forEach(check);
+
+    function check(testFile) {
+        var filename = path.join(dataPath, testFile);
+        var html = fs.readFileSync(filename).toString().replace(/\r/g, '').trim();
+        var expected = fs.readFileSync(filename + '.js').toString().replace(/\r/g, '').trim();
+        var actual = reactTemplates.convertTemplateToReact(html, {
+            plugins: path.resolve(pluginPath, 'rootProps.json')
+        }).replace(/\r/g, '').trim();
+        t.equal(actual, expected);
+        if (actual !== expected) {
+            fs.writeFileSync(filename + '.actual.js', actual);
+        }
+    }
 });
