@@ -1,11 +1,11 @@
 define([
     'react/addons',
     'lodash',
-    'another/dependency'
-], function (React, _, dependency) {
+    'test/plugins/rootPropsPlugin'
+], function (React, _, rootPropsPlugin) {
     'use strict';
     return function () {
-        return React.createElement('div', dependency({
+        return React.createElement('div', rootPropsPlugin({
             'id': 'outer',
             'style': {
                 backgroundColor: 'blue',
